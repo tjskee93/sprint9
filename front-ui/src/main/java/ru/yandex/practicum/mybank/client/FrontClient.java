@@ -36,8 +36,6 @@ public class FrontClient {
 
 
     public AccountDTO getAccount(String token) {
-        System.out.println("=== TOKEN: " + token);
-        System.out.println("=== TOKEN length: " + (token != null ? token.length() : "null"));
         return restClient.get()
                 .uri("/api/accounts/me")
                 .headers(bearer(token))

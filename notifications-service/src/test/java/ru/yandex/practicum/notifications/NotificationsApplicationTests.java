@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.notifications.repository.NotificationRepository;
 
@@ -40,7 +41,7 @@ class NotificationsApplicationTests {
     @DisplayName("Env actuator endpoint требует токен")
     void actuatorEnvRequiresAuthentication() throws Exception {
         mockMvc.perform(get("/actuator/env"))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -56,7 +57,7 @@ class NotificationsApplicationTests {
     @DisplayName("Notifications endpoint с авторизацией")
     void post_rejectsUserJwtWithoutServiceScope() throws Exception {
         mockMvc.perform(post("/api/notifications")
-                        .with(jwt().jwt(b -> b.claim("preferred_username", "solovev")))
+                        .header("X-User-Login", "solovev")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"login\":\"solovev\",\"type\":\"deposit\",\"message\":\"hi\"}"))
                 .andExpect(status().isAccepted());

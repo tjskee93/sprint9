@@ -3,6 +3,23 @@ spring:
     name: transfer
   config:
     import: "optional:consul:"
+  datasource:
+    url: jdbc:postgresql://${PG_HOST:localhost}:${PG_PORT:5432}/${PG_DB:bank}
+    username: ${PG_USER:bank}
+    password: ${PG_PASSWORD:bank}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        default_schema: transfer
+        format_sql: false
+  flyway:
+    enabled: true
+    schemas: transfer
+    default-schema: transfer
+    create-schemas: true
   cloud:
     consul:
       host: ${CONSUL_HOST:localhost}
@@ -64,7 +81,10 @@ resilience4j:
         failure-rate-threshold: 50
         wait-duration-in-open-state: 30s
         permitted-number-of-calls-in-half-open-state: 2
-
+transfer:
+  outbox:
+    max-retry: 10
+    polling-interval-ms: 5000
 logging:
   level:
     org.springframework.security: INFO

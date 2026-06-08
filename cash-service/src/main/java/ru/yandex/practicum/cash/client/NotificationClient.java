@@ -46,7 +46,8 @@ public class NotificationClient {
         String token = serviceToken(SERVICE_NAME);
         restClient.post()
                 .uri("/api/notifications")
-                .headers(h -> h.setBearerAuth(token))
+                .headers(h -> { h.setBearerAuth(token);
+                    h.set("X-User-Login", request.login());})
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .retrieve()

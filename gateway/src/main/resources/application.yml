@@ -11,6 +11,8 @@ spring:
         instance-id: ${spring.application.name}-${random.value}
         prefer-ip-address: true
     gateway:
+      default-filters:
+        - RemoveRequestHeader=Authorization
       routes:
         - id: accounts-service
           uri: lb://accounts
@@ -56,3 +58,6 @@ server:
 logging:
   level:
     org.springframework.cloud.gateway: INFO
+    org.springframework.security: INFO
+    org.springframework.security.authorization: INFO
+    org.springframework.security.access: INFO

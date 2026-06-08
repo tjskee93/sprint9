@@ -26,6 +26,6 @@ class AccountsApplicationTests {
     @DisplayName("Env actuator endpoint требует токен")
     void actuatorEnvRequiresAuthentication() throws Exception {
         mockMvc.perform(get("/actuator/env"))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 }

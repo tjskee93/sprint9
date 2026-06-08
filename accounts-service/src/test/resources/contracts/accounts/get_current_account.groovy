@@ -7,6 +7,7 @@ Contract.make {
         url '/api/accounts/me'
         headers {
             header 'Authorization': 'Bearer token'
+            header 'X-User-Login': 'solovev'
         }
     }
     response {
@@ -18,8 +19,8 @@ Contract.make {
                 login: 'solovev',
                 firstName: 'Илья',
                 lastName: 'Соловьев',
-                birthdate: '1993-12-21',
-                sum: 1000
+                birth_date: '1993-12-21',
+                balance: 1000L
         )
     }
 }

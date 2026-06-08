@@ -1,8 +1,6 @@
 package ru.yandex.practicum.accounts.controllers;
 
 import jakarta.validation.Valid;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.accounts.model.dto.AccountDTO;
 import ru.yandex.practicum.accounts.model.dto.AccountNameDTO;
@@ -22,23 +20,20 @@ public class AccountController {
     }
 
     @GetMapping("/me")
-    public AccountDTO me(@AuthenticationPrincipal Jwt jwt) {
-        String login = jwt.getClaimAsString("preferred_username");
+    public AccountDTO me(@RequestHeader("X-User-Login") String login) {
         service.createIfMissing(login);
         return service.getCurrentAccount(login);
     }
 
     @PutMapping("/me")
-    public AccountDTO update(@AuthenticationPrincipal Jwt jwt
+    public AccountDTO update(@RequestHeader("X-User-Login") String login
             , @Valid @RequestBody AccountUpdateDTO request) {
-        String login = jwt.getClaimAsString("preferred_username");
         service.createIfMissing(login);
         return service.updateCurrentAccount(login, request);
     }
 
     @GetMapping("/others")
-    public List<AccountNameDTO> others(@AuthenticationPrincipal Jwt jwt) {
-        String login = jwt.getClaimAsString("preferred_username");
+    public List<AccountNameDTO> others(@RequestHeader("X-User-Login") String login) {
         service.createIfMissing(login);
         return service.getTransferRecipients(login);
     }

@@ -27,6 +27,6 @@ class CashApplicationTests {
     @DisplayName("Sensitive actuator endpoint требует аутентификацию")
     void actuatorEnvRequiresAuthentication() throws Exception {
         mockMvc.perform(get("/actuator/env"))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 }

@@ -146,6 +146,11 @@ services:
       CONSUL_HOST: consul
       CONSUL_PORT: 8500
       SERVER_PORT: 8084
+      PG_HOST: postgres
+      PG_PORT: 5432
+      PG_DB: bank
+      PG_USER: bank
+      PG_PASSWORD: bank
       BANK_JWK_SET_URI: http://keycloak:9090/realms/my-bank/protocol/openid-connect/certs
       BANK_TOKEN_URI: http://keycloak:9090/realms/my-bank/protocol/openid-connect/token
       BANK_ISSUER_URI: http://localhost:9090/realms/my-bank

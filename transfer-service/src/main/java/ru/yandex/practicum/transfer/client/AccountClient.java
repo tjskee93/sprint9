@@ -59,7 +59,8 @@ public class AccountClient {
         try {
             return restClient.post()
                     .uri("/api/internal/accounts/{login}/{operation}", login, operation)
-                    .headers(h -> h.setBearerAuth(token))
+                    .headers(h -> { h.setBearerAuth(token);
+                        h.set("X-User-Login", login);})
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(amount)
                     .retrieve()
