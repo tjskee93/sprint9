@@ -1,0 +1,59 @@
+spring:
+  application:
+    name: accounts
+  config:
+    import: "optional:consul:"
+  security:
+    oauth2:
+      client:
+        registration:
+          notifications-service:
+            client-id: ${ACCOUNTS_CLIENT_ID:accounts-service}
+            client-secret: ${ACCOUNTS_CLIENT_SECRET:accounts-secret}
+            authorization-grant-type: client_credentials
+            provider: keycloak
+        provider:
+          keycloak:
+            token-uri: ${BANK_TOKEN_URI:http://localhost:9090/realms/my-bank/protocol/openid-connect/token}
+            jwk-set-uri: ${BANK_JWK_SET_URI:http://localhost:9090/realms/my-bank/protocol/openid-connect/certs}
+      resourceserver:
+        jwt:
+          issuer-uri: ${BANK_ISSUER_URI:http://localhost:9090/realms/my-bank}
+          jwk-set-uri: ${BANK_JWK_SET_URI:http://localhost:9090/realms/my-bank/protocol/openid-connect/certs}
+
+  datasource:
+    url: ${ACCOUNTS_DB_URL:jdbc:postgresql://localhost:5432/bank}
+    username: ${ACCOUNTS_DB_USER:bank}
+    password: ${ACCOUNTS_DB_PASSWORD:bank}
+  flyway:
+    schemas: accounts
+    default-schema: accounts
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: accounts
+  cloud:
+    consul:
+      host: ${CONSUL_HOST:localhost}
+      port: ${CONSUL_PORT:8500}
+      discovery:
+        instance-id: ${spring.application.name}-${random.value}
+        prefer-ip-address: true
+      config:
+        enabled: true
+        format: yaml
+        prefix: config
+        default-context: ${spring.application.name}
+        fail-fast: false
+  resilience4j:
+    circuitbreaker:
+      instances:
+        notifications:
+          sliding-window-size: 5
+          failure-rate-threshold: 50
+server:
+  port: ${SERVER_PORT:8083}
+bank:
+  notifications-base-url: ${NOTIFICATIONS_BASE_URL:http://localhost:8082}
