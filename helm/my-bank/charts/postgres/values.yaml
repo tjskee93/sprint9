@@ -1,0 +1,29 @@
+replicaCount: 1
+
+image:
+  repository: postgres
+  tag: "16"
+  pullPolicy: IfNotPresent
+
+postgresql:
+  username: bank
+  password: bank
+  database: bank
+
+service:
+  type: ClusterIP
+  host: postgres
+  port: 5432
+
+persistence:
+  enabled: true
+  size: 1Gi
+  storageClassName: ""
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
