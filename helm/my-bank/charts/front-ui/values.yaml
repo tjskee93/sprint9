@@ -1,0 +1,46 @@
+replicaCount: 1
+
+image:
+  repository: front-ui
+  registry: ""
+  pullPolicy: IfNotPresent
+  tag: "0.0.1"
+
+service:
+  type: NodePort
+  port: 8080
+  nodePort: 30080
+
+authentification:
+  clientId: front-ui
+  clientSecret: front-secret
+
+urls:
+  gatewayUrl: "http://gateway:8081"
+  authorizationUrl: "http://localhost:9090/realms/my-bank/protocol/openid-connect/auth"
+  logoutUrl: "http://localhost:9090/realms/my-bank/protocol/openid-connect/logout"
+  jwkSetUrl: "http://keycloak:9090/realms/my-bank/protocol/openid-connect/certs"
+  tokenUrl: "http://keycloak:9090/realms/my-bank/protocol/openid-connect/token"
+  userInfoUrl: "http://keycloak:9090/realms/my-bank/protocol/openid-connect/userinfo"
+
+probes:
+  readiness:
+    path: "/actuator/health"
+    initialDelaySeconds: 20
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+  liveness:
+    path: "/actuator/health"
+    initialDelaySeconds: 40
+    periodSeconds: 20
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: "1"
+    memory: 768Mi

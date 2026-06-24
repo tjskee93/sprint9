@@ -1,0 +1,44 @@
+replicaCount: 1
+
+image:
+  repository: notifications
+  registry: ""
+  pullPolicy: IfNotPresent
+  tag: "0.0.1"
+
+service:
+  port: 8082
+
+postgres:
+  dbPassword: bank
+  database: bank
+  username: bank
+  host: postgres
+  port: 5432
+  secretName: postgres
+
+authentification:
+  jwkSetUri: "http://keycloak:9090/realms/my-bank/protocol/openid-connect/certs"
+  tokenUri: "http://keycloak:9090/realms/my-bank/protocol/openid-connect/token"
+
+probes:
+  readiness:
+    path: "/actuator/health"
+    initialDelaySeconds: 20
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+  liveness:
+    path: "/actuator/health"
+    initialDelaySeconds: 40
+    periodSeconds: 20
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: "1"
+    memory: 768Mi

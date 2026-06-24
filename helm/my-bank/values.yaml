@@ -1,0 +1,33 @@
+global:
+  image:
+    registry: ""
+    pullPolicy: IfNotPresent
+    tag: "0.0.1"
+
+  postgres:
+    host: postgres
+    port: 5432
+    database: bank
+    username: bank
+postgres:
+  enabled: true
+accounts:
+  enabled: true
+notifications:
+  enabled: true
+cash:
+  enabled: true
+transfer:
+  enabled: true
+gateway:
+  enabled: true
+keycloak:
+  enabled: true
+  service:
+    nodePort: 30090
+front-ui:
+  enabled: true
+  service:
+    nodePort: 30080
+networkPolicy:
+  enabled: true

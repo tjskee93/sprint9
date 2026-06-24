@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: accounts
+  labels:
+    {{- include "accounts.labels" . | nindent 4 }}
+data:
+  SERVER_PORT: {{ .Values.service.port | quote }}
+  ACCOUNTS_DB_URL: {{ .Values.postgres.url | quote }}
+  ACCOUNTS_DB_USER: {{ .Values.postgres.username | quote }}
+  BANK_JWK_SET_URI: {{ .Values.authentification.jwkSetUri | quote }}
+  BANK_TOKEN_URI: {{ .Values.authentification.tokenUri | quote }}
+  BANK_NOTIFICATIONS_URL: {{ .Values.urls.notificationsUrl | quote }}
+  ACCOUNTS_CLIENT_ID: {{ .Values.authentification.clientId | quote }}

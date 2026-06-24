@@ -1,8 +1,6 @@
 spring:
   application:
     name: accounts
-  config:
-    import: "optional:consul:"
   security:
     oauth2:
       client:
@@ -34,25 +32,6 @@ spring:
     properties:
       hibernate:
         default_schema: accounts
-  cloud:
-    consul:
-      host: ${CONSUL_HOST:localhost}
-      port: ${CONSUL_PORT:8500}
-      discovery:
-        instance-id: ${spring.application.name}-${random.value}
-        prefer-ip-address: true
-      config:
-        enabled: true
-        format: yaml
-        prefix: config
-        default-context: ${spring.application.name}
-        fail-fast: false
-  resilience4j:
-    circuitbreaker:
-      instances:
-        notifications:
-          sliding-window-size: 5
-          failure-rate-threshold: 50
 server:
   port: ${SERVER_PORT:8083}
 bank:

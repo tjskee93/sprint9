@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: front-ui
+  labels:
+    {{- include "front-ui.labels" . | nindent 4 }}
+data:
+  SERVER_PORT: {{ .Values.service.port | quote }}
+  BANK_AUTHORIZATION_URI: {{ .Values.urls.authorizationUrl | quote }}
+  BANK_TOKEN_URI: {{ .Values.urls.tokenUrl | quote }}
+  BANK_USER_INFO_URI: {{ .Values.urls.userInfoUrl | quote }}
+  BANK_JWK_SET_URI: {{ .Values.urls.jwkSetUrl | quote }}
+  FRONT_CLIENT_ID: {{ .Values.authentification.clientId | quote }}
+  FRONT_CLIENT_SECRET: {{ .Values.authentification.clientSecret | quote }}
+  BANK_GATEWAY_URL: {{ .Values.urls.gatewayUrl | quote }}
+  BANK_LOGOUT_URI: {{ .Values.urls.logoutUrl | quote }}

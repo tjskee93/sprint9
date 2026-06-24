@@ -1,0 +1,44 @@
+replicaCount: 1
+
+image:
+  repository: gateway
+  registry: ""
+  pullPolicy: IfNotPresent
+  tag: "0.0.1"
+
+service:
+  type: ClusterIP
+  port: 8081
+
+authentification:
+  clientId: gateway
+  clientSecret: gateway-secret
+
+urls:
+  cashUrl: "http://cash:8090"
+  accountsUrl: "http://accounts:8083"
+  transferUrl: "http://transfer:8084"
+  notificationsUrl: "http://notifications:8082"
+  jwkSetUrl: "http://keycloak:9090/realms/my-bank/protocol/openid-connect/certs"
+
+probes:
+  readiness:
+    path: "/actuator/health"
+    initialDelaySeconds: 20
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+  liveness:
+    path: "/actuator/health"
+    initialDelaySeconds: 40
+    periodSeconds: 20
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: "1"
+    memory: 768Mi

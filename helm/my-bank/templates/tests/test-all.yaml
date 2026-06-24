@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-all
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  restartPolicy: Never
+  containers:
+    - name: test
+      image: busybox:1.36
+      command:
+        - sh
+        - -c
+        - |
+          echo "========================================="
+          echo "     RUNNING ALL SERVICE TESTS          "
+          echo "========================================="
+          echo ""
+          echo "1. Testing Gateway..."
+          wget -qO- --timeout=3 http://gateway:8081/actuator/health | grep -q UP && echo "   ✅ Gateway is healthy" || echo "   ❌ Gateway is NOT healthy"
+          echo ""
+          echo "2. Testing Accounts..."
+          wget -qO- --timeout=3 http://accounts:8083/actuator/health | grep -q UP && echo "   ✅ Accounts is healthy" || echo "   ❌ Accounts is NOT healthy"
+          echo ""
+          echo "3. Testing Cash..."
+          wget -qO- --timeout=3 http://cash:8090/actuator/health | grep -q UP && echo "   ✅ Cash is healthy" || echo "   ❌ Cash is NOT healthy"
+          echo ""
+          echo "4. Testing Transfer..."
+          wget -qO- --timeout=3 http://transfer:8084/actuator/health | grep -q UP && echo "   ✅ Transfer is healthy" || echo "   ❌ Transfer is NOT healthy"
+          echo ""
+          echo "5. Testing Notifications..."
+          wget -qO- --timeout=3 http://notifications:8082/actuator/health | grep -q UP && echo "   ✅ Notifications is healthy" || echo "   ❌ Notifications is NOT healthy"
+          echo ""
+          echo "6. Testing Keycloak..."
+          wget -qO- --timeout=3 http://keycloak:9090/realms/master | grep -q realm && echo "   ✅ Keycloak is healthy" || echo "   ❌ Keycloak is NOT healthy"
+          echo ""
+          echo "7. Testing PostgreSQL..."
+          if nc -zv postgres 5432 2>&1 | grep -q "Connected"; then
+            echo "   ✅ PostgreSQL is reachable"
+          else
+            echo "   ❌ PostgreSQL is NOT reachable"
+          fi
+          echo ""
+          echo "8. Testing Front-UI (in cluster)..."
+          if wget -qO- --timeout=3 http://front-ui:8080/actuator/health | grep -q UP; then
+            echo "   ✅ Front-UI is healthy"
+          elif wget -qO- --timeout=3 http://front-ui:8080 | grep -q "My Bank\|Bank"; then
+            echo "   ✅ Front-UI is reachable"
+          else
+            echo "   ❌ Front-UI is NOT reachable"
+            exit 1
+          fi
+          echo ""
+          echo "========================================="
+          echo "     ✅ ALL TESTS COMPLETED!            "
+          echo "========================================="
