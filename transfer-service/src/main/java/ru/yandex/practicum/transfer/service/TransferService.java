@@ -5,15 +5,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.yandex.practicum.kafka.models.dto.NotificationDTO;
 import ru.yandex.practicum.transfer.client.AccountClient;
 import ru.yandex.practicum.transfer.client.NotificationClient;
 import ru.yandex.practicum.transfer.error.TransferException;
-import ru.yandex.practicum.transfer.model.dto.NotificationDTO;
 import ru.yandex.practicum.transfer.model.dto.TransferDTO;
 import ru.yandex.practicum.transfer.outbox.model.TransferOutbox;
 import ru.yandex.practicum.transfer.outbox.repository.TransferOutboxRepository;
-
-import java.util.UUID;
 
 @Service
 public class TransferService {

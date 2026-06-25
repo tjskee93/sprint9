@@ -30,7 +30,6 @@ public class SecurityConfig {
                         .pathMatchers(HttpMethod.GET, "/api/accounts/me", "/api/accounts/others").hasAuthority("SCOPE_accounts.read")
                         .pathMatchers(HttpMethod.PUT, "/api/accounts/me").hasAuthority("SCOPE_accounts.write")
                         .pathMatchers(HttpMethod.POST,"/api/internal/**").hasAuthority("SCOPE_accounts.write")
-                        .pathMatchers("/api/notifications").hasAuthority("SCOPE_notifications.write")
                         .pathMatchers("/api/transfers").hasAuthority("SCOPE_transfer.write")
                         .pathMatchers("/api/cash").hasAuthority("SCOPE_cash.write")
                         .anyExchange().denyAll())

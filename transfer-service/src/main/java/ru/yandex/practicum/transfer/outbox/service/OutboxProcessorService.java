@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.yandex.practicum.kafka.models.dto.NotificationDTO;
 import ru.yandex.practicum.transfer.client.AccountClient;
 import ru.yandex.practicum.transfer.client.NotificationClient;
-import ru.yandex.practicum.transfer.model.dto.NotificationDTO;
 import ru.yandex.practicum.transfer.outbox.model.TransferOutbox;
 import ru.yandex.practicum.transfer.outbox.repository.TransferOutboxRepository;
 

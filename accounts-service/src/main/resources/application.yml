@@ -4,12 +4,6 @@ spring:
   security:
     oauth2:
       client:
-        registration:
-          notifications-service:
-            client-id: ${ACCOUNTS_CLIENT_ID:accounts-service}
-            client-secret: ${ACCOUNTS_CLIENT_SECRET:accounts-secret}
-            authorization-grant-type: client_credentials
-            provider: keycloak
         provider:
           keycloak:
             token-uri: ${BANK_TOKEN_URI:http://localhost:9090/realms/my-bank/protocol/openid-connect/token}
@@ -18,7 +12,17 @@ spring:
         jwt:
           issuer-uri: ${BANK_ISSUER_URI:http://localhost:9090/realms/my-bank}
           jwk-set-uri: ${BANK_JWK_SET_URI:http://localhost:9090/realms/my-bank/protocol/openid-connect/certs}
-
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      acks: all
+      retries: 10
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        enable.idempotence: true
+        delivery.timeout.ms: 15000
+        request.timeout.ms: 5000
   datasource:
     url: ${ACCOUNTS_DB_URL:jdbc:postgresql://localhost:5432/bank}
     username: ${ACCOUNTS_DB_USER:bank}
@@ -35,4 +39,4 @@ spring:
 server:
   port: ${SERVER_PORT:8083}
 bank:
-  notifications-base-url: ${NOTIFICATIONS_BASE_URL:http://localhost:8082}
+  notifications-topic: ${NOTIFICATIONS_TOPIC:notifications-service}

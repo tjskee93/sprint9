@@ -1,0 +1,39 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kafka-topic-init
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: topic-init
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /bin/bash
+            - -ec
+            - |
+              echo "Waiting for Kafka to be ready..."
+              i=0
+              until /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:{{ .Values.service.port }} --list >/dev/null 2>&1; do
+                i=$((i + 1))
+                echo "Attempt $i: Kafka not ready, waiting..."
+                if [ "$i" -ge 30 ]; then
+                  echo "Timeout: Kafka did not become ready."
+                  exit 1
+                fi
+                sleep 2
+              done
+              echo "Kafka is ready. Creating topic..."
+              /opt/kafka/bin/kafka-topics.sh \
+                --bootstrap-server kafka:{{ .Values.service.port }} \
+                --create \
+                --if-not-exists \
+                --topic {{ .Values.topic.name }} \
+                --partitions {{ .Values.topic.partitions }} \
+                --replication-factor {{ .Values.topic.replicationFactor }}
+              echo "Topic '{{ .Values.topic.name }}' created successfully."

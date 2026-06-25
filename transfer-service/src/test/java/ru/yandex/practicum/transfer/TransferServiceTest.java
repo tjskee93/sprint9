@@ -2,10 +2,10 @@ package ru.yandex.practicum.transfer;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import ru.yandex.practicum.kafka.models.dto.NotificationDTO;
 import ru.yandex.practicum.transfer.client.AccountClient;
 import ru.yandex.practicum.transfer.client.NotificationClient;
 import ru.yandex.practicum.transfer.model.dto.AccountDTO;
-import ru.yandex.practicum.transfer.model.dto.NotificationDTO;
 import ru.yandex.practicum.transfer.model.dto.TransferDTO;
 import ru.yandex.practicum.transfer.outbox.model.TransferOutbox;
 import ru.yandex.practicum.transfer.outbox.repository.TransferOutboxRepository;

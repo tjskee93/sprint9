@@ -38,3 +38,6 @@ dependencies:
     version: 0.1.0
     repository: "file://charts/front-ui"
     condition: keycloak.enabled
+  - name: kafka
+    version: 0.1.0
+    repository: "file://charts/kafka"

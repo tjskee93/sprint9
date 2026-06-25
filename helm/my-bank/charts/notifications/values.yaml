@@ -17,9 +17,6 @@ postgres:
   port: 5432
   secretName: postgres
 
-authentification:
-  jwkSetUri: "http://keycloak:9090/realms/my-bank/protocol/openid-connect/certs"
-  tokenUri: "http://keycloak:9090/realms/my-bank/protocol/openid-connect/token"
 
 probes:
   readiness:
@@ -34,6 +31,11 @@ probes:
     periodSeconds: 20
     timeoutSeconds: 5
     failureThreshold: 3
+
+kafkaService:
+  kafkaBootstrapServers: "kafka:9092"
+  notificationsTopic: "notifications-service"
+  consumerGroup: "notifications-service"
 
 resources:
   requests:

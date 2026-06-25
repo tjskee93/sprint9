@@ -24,7 +24,8 @@ authentification:
   tokenUri: "http://keycloak:9090/realms/my-bank/protocol/openid-connect/token"
 
 urls:
-  notificationsUrl: "http://notifications:8082"
+  kafkaBootstrapServers: "kafka:9092"
+  notificationsTopic: "notifications-service"
   accountsUrl: "http://accounts:8083"
 
 probes:

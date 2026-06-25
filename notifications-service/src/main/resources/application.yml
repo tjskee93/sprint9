@@ -21,16 +21,19 @@ spring:
     schemas: notifications
     default-schema: notifications
     create-schemas: true
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: ${BANK_ISSUER_URI:http://localhost:9090/realms/my-bank}
-          jwk-set-uri: ${BANK_JWK_SET_URI:http://localhost:9090/realms/my-bank/protocol/openid-connect/certs}
 
-  resilience4j:
-    circuitbreaker:
-      instances:
-        notifications:
-          sliding-window-size: 5
-          failure-rate-threshold: 50
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: ${BANK_NOTIFICATIONS_GROUP:notifications-service}
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "ru.yandex.practicum.kafka.models.dto"
+        spring.json.value.default.type: ru.yandex.practicum.kafka.models.dto.NotificationDTO
+    listener:
+      ack-mode: record
+bank:
+  notifications-topic: ${NOTIFICATIONS_TOPIC:notifications-service}

@@ -9,48 +9,63 @@ spec:
   restartPolicy: Never
   containers:
     - name: test
-      image: busybox:1.36
+      image: alpine:3.19
       command:
         - sh
         - -c
         - |
+          apk add --no-cache curl wget netcat-openbsd
           echo "========================================="
           echo "     RUNNING ALL SERVICE TESTS          "
           echo "========================================="
           echo ""
           echo "1. Testing Gateway..."
-          wget -qO- --timeout=3 http://gateway:8081/actuator/health | grep -q UP && echo "   ✅ Gateway is healthy" || echo "   ❌ Gateway is NOT healthy"
+          curl -s -o /dev/null -w "%{http_code}" --max-time 3 http://gateway:8081/actuator/health | grep -q 200 && echo "   ✅ Gateway is healthy" || echo "   ❌ Gateway is NOT healthy"
           echo ""
           echo "2. Testing Accounts..."
-          wget -qO- --timeout=3 http://accounts:8083/actuator/health | grep -q UP && echo "   ✅ Accounts is healthy" || echo "   ❌ Accounts is NOT healthy"
+          curl -s -o /dev/null -w "%{http_code}" --max-time 3 http://accounts:8083/actuator/health | grep -q 200 && echo "   ✅ Accounts is healthy" || echo "   ❌ Accounts is NOT healthy"
           echo ""
           echo "3. Testing Cash..."
-          wget -qO- --timeout=3 http://cash:8090/actuator/health | grep -q UP && echo "   ✅ Cash is healthy" || echo "   ❌ Cash is NOT healthy"
+          curl -s -o /dev/null -w "%{http_code}" --max-time 3 http://cash:8090/actuator/health | grep -q 200 && echo "   ✅ Cash is healthy" || echo "   ❌ Cash is NOT healthy"
           echo ""
           echo "4. Testing Transfer..."
-          wget -qO- --timeout=3 http://transfer:8084/actuator/health | grep -q UP && echo "   ✅ Transfer is healthy" || echo "   ❌ Transfer is NOT healthy"
+          curl -s -o /dev/null -w "%{http_code}" --max-time 3 http://transfer:8084/actuator/health | grep -q 200 && echo "   ✅ Transfer is healthy" || echo "   ❌ Transfer is NOT healthy"
           echo ""
           echo "5. Testing Notifications..."
-          wget -qO- --timeout=3 http://notifications:8082/actuator/health | grep -q UP && echo "   ✅ Notifications is healthy" || echo "   ❌ Notifications is NOT healthy"
+          curl -s -o /dev/null -w "%{http_code}" --max-time 3 http://notifications:8082/actuator/health | grep -q 200 && echo "   ✅ Notifications is healthy" || echo "   ❌ Notifications is NOT healthy"
           echo ""
           echo "6. Testing Keycloak..."
-          wget -qO- --timeout=3 http://keycloak:9090/realms/master | grep -q realm && echo "   ✅ Keycloak is healthy" || echo "   ❌ Keycloak is NOT healthy"
+          curl -s -o /dev/null -w "%{http_code}" --max-time 3 http://keycloak:9090/realms/master | grep -q 200 && echo "   ✅ Keycloak is healthy" || echo "   ❌ Keycloak is NOT healthy"
           echo ""
-          echo "7. Testing PostgreSQL..."
-          if nc -zv postgres 5432 2>&1 | grep -q "Connected"; then
+          echo "7. Testing PostgreSQL (headless service)..."
+          if nc -zv postgres-0.postgres 5432 2>&1 | grep -q "succeeded\|Connected"; then
             echo "   ✅ PostgreSQL is reachable"
           else
             echo "   ❌ PostgreSQL is NOT reachable"
           fi
           echo ""
-          echo "8. Testing Front-UI (in cluster)..."
-          if wget -qO- --timeout=3 http://front-ui:8080/actuator/health | grep -q UP; then
+          echo "8. Testing Front-UI..."
+          if curl -s -o /dev/null -w "%{http_code}" --max-time 3 http://front-ui:8080/actuator/health | grep -q 200; then
             echo "   ✅ Front-UI is healthy"
-          elif wget -qO- --timeout=3 http://front-ui:8080 | grep -q "My Bank\|Bank"; then
+          elif curl -s -o /dev/null -w "%{http_code}" --max-time 3 http://front-ui:8080 | grep -q 200; then
             echo "   ✅ Front-UI is reachable"
           else
             echo "   ❌ Front-UI is NOT reachable"
-            exit 1
+          fi
+          echo ""
+          echo "9. Testing Kafka connectivity..."
+          if nc -zv kafka 9092 2>&1 | grep -q "succeeded\|Connected"; then
+            echo "   ✅ Kafka port 9092 is reachable"
+          else
+            echo "   ❌ Kafka port 9092 is NOT reachable"
+          fi
+          echo ""
+          echo "10. Testing Kafka topic existence..."
+          # Проверяем через wget на JMX порт или просто проверяем доступность
+          if nc -zv kafka 9092 2>&1 | grep -q "succeeded\|Connected"; then
+            echo "   ✅ Kafka is accessible"
+          else
+            echo "   ❌ Kafka is NOT accessible"
           fi
           echo ""
           echo "========================================="

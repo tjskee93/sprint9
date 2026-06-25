@@ -7,7 +7,8 @@ metadata:
 data:
   SERVER_PORT: {{ .Values.service.port | quote }}
   ACCOUNTS_BASE_URL: {{ .Values.urls.accountsUrl | quote }}
-  NOTIFICATIONS_BASE_URL: {{ .Values.urls.notificationsUrl | quote }}
+  KAFKA_BOOTSTRAP_SERVERS: {{ .Values.urls.kafkaBootstrapServers | quote }}
+  NOTIFICATIONS_TOPIC: {{ .Values.urls.notificationsTopic | quote }}
   BANK_JWK_SET_URI: {{ .Values.authentification.jwkSetUri | quote }}
   BANK_TOKEN_URI: {{ .Values.authentification.tokenUri | quote }}
   CASH_CLIENT_ID: {{ .Values.authentification.clientId | quote }}
