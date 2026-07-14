@@ -14,3 +14,6 @@ data:
   FRONT_CLIENT_SECRET: {{ .Values.authentification.clientSecret | quote }}
   BANK_GATEWAY_URL: {{ .Values.urls.gatewayUrl | quote }}
   BANK_LOGOUT_URI: {{ .Values.urls.logoutUrl | quote }}
+  ZIPKIN_ENDPOINT: {{ .Values.management.zipkin.endpoint | quote }}
+  LOGSTASH_HOST: {{ .Values.logstash.host | quote }}
+  LOGSTASH_PORT: {{ .Values.logstash.port | quote }}

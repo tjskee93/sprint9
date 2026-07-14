@@ -41,3 +41,11 @@ resources:
   limits:
     cpu: "1"
     memory: 768Mi
+
+management:
+  zipkin:
+    endpoint: "http://zipkin:9411/api/v2/spans"
+
+logstash:
+  host: logstash
+  port: 5000

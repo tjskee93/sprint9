@@ -13,3 +13,6 @@ data:
   KAFKA_BOOTSTRAP_SERVERS: {{ .Values.kafkaService.kafkaBootstrapServers | quote }}
   NOTIFICATIONS_TOPIC: {{ .Values.kafkaService.notificationsTopic | quote }}
   NOTIFICATIONS_GROUP: {{ .Values.kafkaService.consumerGroup | quote }}
+  ZIPKIN_ENDPOINT: {{ .Values.management.zipkin.endpoint | quote }}
+  LOGSTASH_HOST: {{ .Values.logstash.host | quote }}
+  LOGSTASH_PORT: {{ .Values.logstash.port | quote }}

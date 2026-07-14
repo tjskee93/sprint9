@@ -1,0 +1,244 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/component: dashboards
+data:
+  spring-boot-overview.json: |
+    {
+      "id": null,
+      "uid": "spring-boot-overview",
+      "title": "Spring Boot Overview",
+      "tags": ["spring-boot", "micrometer", "banking"],
+      "timezone": "browser",
+      "schemaVersion": 16,
+      "version": 0,
+      "panels": [
+        {
+          "id": 1,
+          "title": "JVM Memory Usage",
+          "type": "graph",
+          "targets": [
+            {
+              "expr": "sum(jvm_memory_used_bytes{area=\"heap\"}) by (application)",
+              "legendFormat": "Heap"
+            },
+            {
+              "expr": "sum(jvm_memory_max_bytes{area=\"heap\"}) by (application)",
+              "legendFormat": "Max Heap"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
+        },
+        {
+          "id": 2,
+          "title": "CPU Usage",
+          "type": "graph",
+          "targets": [
+            {
+              "expr": "sum(rate(process_cpu_usage[1m])) by (application)",
+              "legendFormat": "CPU"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+        },
+        {
+          "id": 3,
+          "title": "GC Time",
+          "type": "graph",
+          "targets": [
+            {
+              "expr": "rate(jvm_gc_pause_seconds_sum[5m]) by (action, application)",
+              "legendFormat": "GC"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+        },
+        {
+          "id": 4,
+          "title": "Thread States",
+          "type": "graph",
+          "targets": [
+            {
+              "expr": "jvm_threads_states_threads by (state, application)",
+              "legendFormat": "Threads"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+        },
+        {
+          "id": 5,
+          "title": "Class Loading",
+          "type": "graph",
+          "targets": [
+            {
+              "expr": "jvm_classes_loaded_classes by (application)",
+              "legendFormat": "Loaded Classes"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 24, "x": 0, "y": 16}
+        }
+      ]
+    }
+  http-metrics.json: |
+    {
+      "id": null,
+      "uid": "http-metrics",
+      "title": "HTTP Metrics",
+      "tags": ["http", "spring-boot", "rest"],
+      "timezone": "browser",
+      "schemaVersion": 16,
+      "version": 0,
+      "panels": [
+        {
+          "id": 1,
+          "title": "HTTP Requests Rate (RPS)",
+          "type": "graph",
+          "targets": [
+            {
+              "expr": "sum(rate(http_server_requests_seconds_count[1m])) by (application)",
+              "legendFormat": "RPS"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
+        },
+        {
+          "id": 2,
+          "title": "HTTP 4xx Rate",
+          "type": "graph",
+          "targets": [
+            {
+              "expr": "sum(rate(http_server_requests_seconds_count{status=~\"4..\"}[1m])) by (application)",
+              "legendFormat": "4xx"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+        },
+        {
+          "id": 3,
+          "title": "HTTP 5xx Rate",
+          "type": "graph",
+          "targets": [
+            {
+              "expr": "sum(rate(http_server_requests_seconds_count{status=~\"5..\"}[1m])) by (application)",
+              "legendFormat": "5xx"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+        },
+        {
+          "id": 4,
+          "title": "HTTP Latency Percentiles",
+          "type": "graph",
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket[5m])) by (le, application))",
+              "legendFormat": "p95"
+            },
+            {
+              "expr": "histogram_quantile(0.99, sum(rate(http_server_requests_seconds_bucket[5m])) by (le, application))",
+              "legendFormat": "p99"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+        },
+        {
+          "id": 5,
+          "title": "HTTP Status Distribution",
+          "type": "piechart",
+          "targets": [
+            {
+              "expr": "sum(rate(http_server_requests_seconds_count[5m])) by (status, application)",
+              "legendFormat": "Status"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 24, "x": 0, "y": 16}
+        }
+      ]
+    }
+  business-metrics.json: |
+    {
+      "id": null,
+      "uid": "business-metrics",
+      "title": "Business Metrics",
+      "tags": ["business", "banking", "transactions"],
+      "timezone": "browser",
+      "schemaVersion": 16,
+      "version": 0,
+      "panels": [
+        {
+          "id": 1,
+          "title": "Failed Withdrawals by User",
+          "type": "graph",
+          "targets": [
+            {
+              "expr": "sum(increase(bank_cash_withdrawal_failed_total[5m])) by (login)",
+              "legendFormat": "Withdrawals"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
+        },
+        {
+          "id": 2,
+          "title": "Failed Withdrawals Rate",
+          "type": "graph",
+          "targets": [
+            {
+              "expr": "sum(rate(bank_cash_withdrawal_failed_total[5m])) by (login)",
+              "legendFormat": "Withdrawals Rate"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+        },
+        {
+          "id": 3,
+          "title": "Failed Transfers by Sender",
+          "type": "graph",
+          "targets": [
+            {
+              "expr": "sum(increase(bank_transfer_failed_total[5m])) by (sender_login)",
+              "legendFormat": "Transfers Sender"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+        },
+        {
+          "id": 4,
+          "title": "Failed Transfers by Receiver",
+          "type": "graph",
+          "targets": [
+            {
+              "expr": "sum(increase(bank_transfer_failed_total[5m])) by (receiver_login)",
+              "legendFormat": "Transfers Receiver"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+        },
+        {
+          "id": 5,
+          "title": "Notification Failures by User",
+          "type": "graph",
+          "targets": [
+            {
+              "expr": "sum(increase(bank_notification_failed_total[5m])) by (login)",
+              "legendFormat": "Notifications"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16}
+        },
+        {
+          "id": 6,
+          "title": "Notification Failures Rate",
+          "type": "graph",
+          "targets": [
+            {
+              "expr": "sum(rate(bank_notification_failed_total[5m])) by (login)",
+              "legendFormat": "Notifications Rate"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16}
+        }
+      ]
+    }

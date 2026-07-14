@@ -11,3 +11,6 @@ data:
   TRANSFER_BASE_URL: {{ .Values.urls.transferUrl | quote }}
   NOTIFICATIONS_BASE_URL: {{ .Values.urls.notificationsUrl | quote }}
   BANK_JWK_SET_URI: {{ .Values.urls.jwkSetUrl | quote }}
+  ZIPKIN_ENDPOINT: {{ .Values.management.zipkin.endpoint | quote }}
+  LOGSTASH_HOST: {{ .Values.logstash.host | quote }}
+  LOGSTASH_PORT: {{ .Values.logstash.port | quote }}
