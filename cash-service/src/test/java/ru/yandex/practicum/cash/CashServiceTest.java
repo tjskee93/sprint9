@@ -5,10 +5,10 @@ import org.mockito.ArgumentCaptor;
 import ru.yandex.practicum.cash.client.AccountClient;
 import ru.yandex.practicum.cash.client.NotificationClient;
 import ru.yandex.practicum.cash.model.dto.CashDTO;
-import ru.yandex.practicum.cash.model.dto.NotificationDTO;
 import ru.yandex.practicum.cash.services.CashService;
 import ru.yandex.practicum.cash.model.dto.AccountDTO;
 import ru.yandex.practicum.cash.model.CashAction;
+import ru.yandex.practicum.kafka.models.dto.NotificationDTO;
 
 import java.time.LocalDate;
 

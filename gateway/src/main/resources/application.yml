@@ -30,14 +30,6 @@ spring:
             - name: CircuitBreaker
               args:
                 name: transfer
-        - id: notifications-service
-          uri: ${NOTIFICATIONS_BASE_URL:http://localhost:8082}
-          predicates:
-            - Path=/api/notifications/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: notifications
 
   security:
     oauth2:

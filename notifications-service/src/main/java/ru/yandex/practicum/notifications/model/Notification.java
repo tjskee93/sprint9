@@ -21,16 +21,28 @@ public class Notification {
     @Column(name = "message", nullable = false)
     private String message;
 
+    @Column(name = "amount", nullable = false)
+    private Long amount;
+
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
 
     protected Notification() {}
 
-    public Notification(String login, String type, String message) {
+    public Notification(String login, String type, String message, Long amount) {
         this.login = login;
         this.type = type;
         this.message = message;
         this.createdAt = OffsetDateTime.now();
+        this.amount = amount;
+    }
+
+    public Long getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Long amount) {
+        this.amount = amount;
     }
 
     public Long getId() {

@@ -7,7 +7,7 @@ import ru.yandex.practicum.cash.client.AccountClient;
 import ru.yandex.practicum.cash.error.CashException;
 import ru.yandex.practicum.cash.model.CashAction;
 import ru.yandex.practicum.cash.model.dto.CashDTO;
-import ru.yandex.practicum.cash.model.dto.NotificationDTO;
+import ru.yandex.practicum.kafka.models.dto.NotificationDTO;
 
 @Service
 public class CashService {

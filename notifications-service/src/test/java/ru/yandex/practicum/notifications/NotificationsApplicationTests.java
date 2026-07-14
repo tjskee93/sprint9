@@ -36,32 +36,4 @@ class NotificationsApplicationTests {
                 .andExpect(status().isOk());
 
     }
-
-    @Test
-    @DisplayName("Env actuator endpoint требует токен")
-    void actuatorEnvRequiresAuthentication() throws Exception {
-        mockMvc.perform(get("/actuator/env"))
-                .andExpect(status().isForbidden());
-    }
-
-    @Test
-    @DisplayName("Notifications endpoint требует токен")
-    void post_requiresAuth() throws Exception {
-        mockMvc.perform(post("/api/notifications")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"login\":\"alice\",\"type\":\"deposit\",\"message\":\"hi\"}"))
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    @DisplayName("Notifications endpoint с авторизацией")
-    void post_rejectsUserJwtWithoutServiceScope() throws Exception {
-        mockMvc.perform(post("/api/notifications")
-                        .header("X-User-Login", "solovev")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"login\":\"solovev\",\"type\":\"deposit\",\"message\":\"hi\"}"))
-                .andExpect(status().isAccepted());
-        assertThat(repository.count()).isEqualTo(1);
-        assertThat(repository.findAll().get(0).getMessage()).isEqualTo("hi");
-    }
 }

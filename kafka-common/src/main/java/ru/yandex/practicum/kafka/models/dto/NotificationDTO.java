@@ -1,4 +1,4 @@
-package ru.yandex.practicum.cash.model.dto;
+package ru.yandex.practicum.kafka.models.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
@@ -7,5 +7,4 @@ public record NotificationDTO(
         @NotBlank(message = "Need type") String type,
         @NotBlank(message = "Need message") String message,
         Long amount
-) {
-}
+) {}
