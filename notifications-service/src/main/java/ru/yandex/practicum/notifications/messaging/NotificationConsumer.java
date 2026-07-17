@@ -1,5 +1,6 @@
 package ru.yandex.practicum.notifications.messaging;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,19 +15,28 @@ import ru.yandex.practicum.notifications.repository.NotificationRepository;
 public class NotificationConsumer {
 
     private final NotificationRepository repository;
+    private final MeterRegistry meterRegistry;
     private static final Logger log = LoggerFactory.getLogger(NotificationConsumer.class);
 
-    public NotificationConsumer(NotificationRepository repository) {
+    public NotificationConsumer(NotificationRepository repository, MeterRegistry meterRegistry) {
         this.repository = repository;
-        log.info("NotificationConsumer bean created!");
+        this.meterRegistry = meterRegistry;
     }
 
     @KafkaListener(topics = "${bank.notifications-topic}",
             groupId = "${spring.kafka.consumer.group-id:notifications-service}")
     @Transactional
     public void consume(NotificationDTO request) {
-        Notification notify = repository.save(new Notification(request.login(), request.type(), request.message(), request.amount()));
-        log.info("Notification for login={} type={} message={}",
-                notify.getLogin(), notify.getType(), notify.getMessage());
+        try {
+            Notification notify = repository.save(new Notification(request.login(), request.type(), request.message(), request.amount()));
+            log.info("Notification for login={} type={} message={}",
+                    notify.getLogin(), notify.getType(), notify.getMessage());
+
+        } catch (RuntimeException exception) {
+            meterRegistry.counter("bank.notification.failed", "login", request.login());
+            log.error("Notification error login={} type={} message={}",
+                    request.login(), request.type(), request.message());
+            throw exception;
+        }
     }
 }

@@ -13,3 +13,6 @@ data:
   ACCOUNTS_CLIENT_ID: {{ .Values.authentification.clientId | quote }}
   KAFKA_BOOTSTRAP_SERVERS: {{ .Values.urls.kafkaBootstrapServers | quote }}
   NOTIFICATIONS_TOPIC: {{ .Values.urls.notificationsTopic | quote }}
+  ZIPKIN_ENDPOINT: {{ .Values.management.zipkin.endpoint | quote }}
+  LOGSTASH_HOST: {{ .Values.logstash.host | quote }}
+  LOGSTASH_PORT: {{ .Values.logstash.port | quote }}

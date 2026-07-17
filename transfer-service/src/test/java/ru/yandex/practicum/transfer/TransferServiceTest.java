@@ -1,5 +1,6 @@
 package ru.yandex.practicum.transfer;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import ru.yandex.practicum.kafka.models.dto.NotificationDTO;
@@ -25,11 +26,12 @@ class TransferServiceTest {
         AccountClient accountsClient = mock(AccountClient.class);
         NotificationClient notificationClient = mock(NotificationClient.class);
         TransferOutboxRepository outboxRepository = mock(TransferOutboxRepository.class);
+        MeterRegistry meterRegistry = mock(MeterRegistry.class);
 
         when(accountsClient.withdraw(eq("solovev"), anyLong()))
                 .thenReturn(new AccountDTO("solovev", "Илья", "Соловьев", LocalDate.of(2001, 1, 1), 75));
 
-        TransferService service = new TransferService(accountsClient, notificationClient, outboxRepository);
+        TransferService service = new TransferService(accountsClient, notificationClient, outboxRepository, meterRegistry);
 
         String result = service.transfer("solovev", new TransferDTO("solovev2", 25));
 
@@ -59,11 +61,12 @@ class TransferServiceTest {
         AccountClient accountsClient = mock(AccountClient.class);
         NotificationClient notificationClient = mock(NotificationClient.class);
         TransferOutboxRepository outboxRepository = mock(TransferOutboxRepository.class);
+        MeterRegistry meterRegistry = mock(MeterRegistry.class);
 
         RuntimeException failure = new RuntimeException("insufficient funds");
         when(accountsClient.withdraw(eq("solovev"), anyLong())).thenThrow(failure);
 
-        TransferService service = new TransferService(accountsClient, notificationClient, outboxRepository);
+        TransferService service = new TransferService(accountsClient, notificationClient, outboxRepository, meterRegistry);
 
         assertThatThrownBy(() -> service.transfer("solovev", new TransferDTO("solovev2", 25)))
                 .isSameAs(failure);
@@ -79,8 +82,9 @@ class TransferServiceTest {
         AccountClient accountsClient = mock(AccountClient.class);
         NotificationClient notificationClient = mock(NotificationClient.class);
         TransferOutboxRepository outboxRepository = mock(TransferOutboxRepository.class);
+        MeterRegistry meterRegistry = mock(MeterRegistry.class);
 
-        TransferService service = new TransferService(accountsClient, notificationClient, outboxRepository);
+        TransferService service = new TransferService(accountsClient, notificationClient, outboxRepository, meterRegistry);
 
         assertThatThrownBy(() -> service.transfer("solovev", new TransferDTO("solovev2", -10)))
                 .hasMessage("Сумма должна быть больше нуля");
@@ -97,8 +101,9 @@ class TransferServiceTest {
         AccountClient accountsClient = mock(AccountClient.class);
         NotificationClient notificationClient = mock(NotificationClient.class);
         TransferOutboxRepository outboxRepository = mock(TransferOutboxRepository.class);
+        MeterRegistry meterRegistry = mock(MeterRegistry.class);
 
-        TransferService service = new TransferService(accountsClient, notificationClient, outboxRepository);
+        TransferService service = new TransferService(accountsClient, notificationClient, outboxRepository, meterRegistry);
 
         assertThatThrownBy(() -> service.transfer("solovev", new TransferDTO("solovev", 100)))
                 .hasMessage("Нельзя перевести деньги самому себе");

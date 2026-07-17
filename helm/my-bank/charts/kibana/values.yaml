@@ -1,0 +1,19 @@
+replicaCount: 1
+
+image:
+  repository: kibana
+  tag: "8.18.2"
+  pullPolicy: IfNotPresent
+
+service:
+  port: 5601
+
+elasticsearch:
+  url: "http://elasticsearch:9200"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 512Mi
+  limits:
+    memory: 1Gi

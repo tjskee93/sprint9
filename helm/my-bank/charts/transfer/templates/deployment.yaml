@@ -26,6 +26,18 @@ spec:
                 sleep 2
               done
               echo "postgres is reachable"
+        - name: wait-for-logstash
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              echo "Waiting for Logstash..."
+              until nc -z logstash 5000; do
+                echo "Logstash not ready, waiting..."
+                sleep 2
+              done
+              echo "Logstash is ready!"
       containers:
         - name: transfer
           image: {{ include "transfer.image" . | quote }}

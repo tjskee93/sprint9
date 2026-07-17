@@ -68,6 +68,63 @@ spec:
             echo "   ❌ Kafka is NOT accessible"
           fi
           echo ""
+          echo "11. Testing Zipkin..."
+          if curl -s -o /dev/null -w "%{http_code}" --max-time 5 http://zipkin:9411/health | grep -q 200; then
+            echo "   ✅ Zipkin is healthy"
+          elif curl -s -o /dev/null -w "%{http_code}" --max-time 5 http://zipkin:9411/actuator/health | grep -q 200; then
+            echo "   ✅ Zipkin is healthy (actuator)"
+          elif curl -s -o /dev/null -w "%{http_code}" --max-time 5 http://zipkin:9411 | grep -q 200; then
+            echo "   ✅ Zipkin is reachable"
+          else
+            echo "   ❌ Zipkin is NOT reachable"
+          fi
+          echo ""
+          echo "12. Testing Grafana..."
+          if curl -s -o /dev/null -w "%{http_code}" --max-time 5 http://grafana:3000/api/health | grep -q 200; then
+            echo "   ✅ Grafana is healthy"
+          elif curl -s -o /dev/null -w "%{http_code}" --max-time 5 http://grafana:3000 | grep -q 200; then
+            echo "   ✅ Grafana is reachable"
+          else
+            echo "   ❌ Grafana is NOT reachable"
+          fi
+          echo ""
+          echo "13. Testing Prometheus..."
+          if curl -s -o /dev/null -w "%{http_code}" --max-time 5 http://prometheus:8089/-/healthy | grep -q 200; then
+            echo "   ✅ Prometheus is healthy"
+          elif curl -s -o /dev/null -w "%{http_code}" --max-time 5 http://prometheus:8089 | grep -q 200; then
+            echo "   ✅ Prometheus is reachable"
+          else
+            echo "   ❌ Prometheus is NOT reachable"
+          fi
+          echo ""
+          echo "14. Testing Elasticsearch..."
+          if curl -s -o /dev/null -w "%{http_code}" --max-time 5 http://elasticsearch:9200 | grep -q 200; then
+            echo "   ✅ Elasticsearch is reachable"
+          elif curl -s -o /dev/null -w "%{http_code}" --max-time 5 http://elasticsearch:9200/_cluster/health | grep -q 200; then
+            echo "   ✅ Elasticsearch is healthy"
+          else
+            echo "   ❌ Elasticsearch is NOT reachable"
+          fi
+          echo ""
+          echo "15. Testing Logstash..."
+          # Logstash не имеет HTTP эндпоинта для проверки, проверяем порт
+          if nc -zv logstash 5000 2>&1 | grep -q "succeeded\|Connected"; then
+            echo "   ✅ Logstash port 5000 is reachable"
+          elif nc -zv logstash 9600 2>&1 | grep -q "succeeded\|Connected"; then
+            echo "   ✅ Logstash API port 9600 is reachable"
+          else
+            echo "   ❌ Logstash is NOT reachable"
+          fi
+          echo ""
+          echo "16. Testing Kibana..."
+          if curl -s -o /dev/null -w "%{http_code}" --max-time 5 http://kibana:5601/api/status | grep -q 200; then
+            echo "   ✅ Kibana is healthy"
+          elif curl -s -o /dev/null -w "%{http_code}" --max-time 5 http://kibana:5601 | grep -q 200; then
+            echo "   ✅ Kibana is reachable"
+          else
+            echo "   ❌ Kibana is NOT reachable"
+          fi
+          echo ""
           echo "========================================="
           echo "     ✅ ALL TESTS COMPLETED!            "
           echo "========================================="

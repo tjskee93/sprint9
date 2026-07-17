@@ -1,6 +1,8 @@
 package ru.yandex.practicum.accounts.services;
 
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.accounts.client.NotificationClient;
@@ -18,6 +20,8 @@ import java.util.List;
 public class AccountService {
     private final NotificationClient notificationClient;
     private final AccountRepository accountRepository;
+
+    private static final Logger log = LoggerFactory.getLogger(AccountService.class);
 
     public AccountService(NotificationClient notificationClient, AccountRepository accountRepository) {
         this.notificationClient = notificationClient;
@@ -45,6 +49,7 @@ public class AccountService {
 
     @Transactional
     public AccountDTO updateCurrentAccount(String login, AccountUpdateDTO request) {
+        log.info("Updated account: login={}", login);
         Account account = getAccount(login);
         account.setFirstName(request.firstName());
         account.setLastName(request.lastName());
@@ -54,6 +59,7 @@ public class AccountService {
                 "ACCOUNT_UPDATED",
                 "Данные аккаунта обновлены"
         );
+        log.info("Updated account successfully: login={}", login);
         return toAccountDTO(accountRepository.save(account));
     }
 
@@ -69,11 +75,14 @@ public class AccountService {
     @Transactional
     public AccountDTO changeBalance(String login, long value) {
         Account account = getAccount(login);
+        log.debug("Change balance on account: login={}, balance={}, amountValue={}", login, account.getBalance(), value);
         if (account.getBalance() + value < 0) {
+            log.error("Account: login={} dont have money: balance={}, amountValue={}", login, account.getBalance(), value);
             throw new AccountException(HttpStatus.CONFLICT, "Недостаточно средств на счёте");
         }
         account.changeBalance(value);
         accountRepository.save(account);
+        log.debug("Change balance on account: login={} successfully. New balance={}", login, account.getBalance());
         return toAccountDTO(account);
     }
 

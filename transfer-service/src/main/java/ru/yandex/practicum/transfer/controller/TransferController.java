@@ -16,7 +16,6 @@ public class TransferController {
 
     @PostMapping
     public String transfer(@RequestHeader("X-User-Login") String login, @Valid @RequestBody TransferDTO request) {
-        System.out.println(login + " переводит деньги " + request.toString());
         if (login.equals(request.login())) {
             throw new IllegalArgumentException("Cannot transfer to yourself");
         }

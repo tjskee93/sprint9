@@ -12,3 +12,6 @@ data:
   BANK_JWK_SET_URI: {{ .Values.authentification.jwkSetUri | quote }}
   BANK_TOKEN_URI: {{ .Values.authentification.tokenUri | quote }}
   CASH_CLIENT_ID: {{ .Values.authentification.clientId | quote }}
+  ZIPKIN_ENDPOINT: {{ .Values.management.zipkin.endpoint | quote }}
+  LOGSTASH_HOST: {{ .Values.logstash.host | quote }}
+  LOGSTASH_PORT: {{ .Values.logstash.port | quote }}

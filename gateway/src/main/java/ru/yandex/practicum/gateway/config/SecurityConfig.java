@@ -25,7 +25,7 @@ public class SecurityConfig {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchange -> exchange
-                        .pathMatchers("/actuator/health", "/actuator/info").permitAll()
+                        .pathMatchers("/actuator/health", "/actuator/info", "/actuator/prometheus").permitAll()
                         .pathMatchers("/actuator/**").authenticated()
                         .pathMatchers(HttpMethod.GET, "/api/accounts/me", "/api/accounts/others").hasAuthority("SCOPE_accounts.read")
                         .pathMatchers(HttpMethod.PUT, "/api/accounts/me").hasAuthority("SCOPE_accounts.write")

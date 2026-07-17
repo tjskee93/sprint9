@@ -32,3 +32,21 @@ networkPolicy:
   enabled: true
 kafka:
   enabled: true
+zipkin:
+  replicaCount: 1
+  image:
+    repository: openzipkin/zipkin
+    tag: "3.5.1"
+    pullPolicy: IfNotPresent
+  service:
+    port: 9411
+prometheus:
+  enabled: true
+grafana:
+  enabled: true
+logstash:
+  enabled: true
+elasticsearch:
+  enabled: true
+kibana:
+  enabled: true

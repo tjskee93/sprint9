@@ -1,0 +1,22 @@
+replicaCount: 1
+
+image:
+  repository: logstash
+  tag: "8.18.2"
+  pullPolicy: IfNotPresent
+
+service:
+  logsPort: 5000
+  apiPort: 9600
+
+elasticsearch:
+  url: "http://elasticsearch:9200"
+
+javaOpts: "-Xms256m -Xmx256m"
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 512Mi
+  limits:
+    memory: 1Gi
